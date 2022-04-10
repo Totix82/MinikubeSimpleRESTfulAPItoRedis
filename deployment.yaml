@@ -17,3 +17,33 @@ spec:
       containers:
       - name: my-backend-api
         image: andyy5/my-backend-api
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80 # run on port 80
+        livenessProbe: # To check the health of the Pod
+          httpGet:
+            path: /health
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe: # To check if the Pod is ready to serve traffic or not
+          httpGet:
+            path: /readiness
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 1   
+        env: # list of env variables passed to the app
+          - name: REDIS_URL # REDIS_URL is the hostname for the redis cluster 
+            valueFrom:
+              configMapKeyRef:
+                name: app-configmap # name of the config-map
+                key: redis-service # import the value of 'redis-service' from app-configmap
+          - name: REDIS_PASSWORD # REDIS_PASSWORD is used by the app to authenticate with the redis host
+            valueFrom:
+              secretKeyRef:
+                name: app-secret # name of the secret
+                key: redis-password # import the value of 'redis-password' from app-secret
+---
