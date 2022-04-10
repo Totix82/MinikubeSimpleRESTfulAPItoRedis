@@ -153,6 +153,12 @@ statefulset.apps/salvoredisdeployv01-master     1/1     3m57s
 statefulset.apps/salvoredisdeployv01-replicas   3/3     3m57s
 
 Any pod in the kubernetes cluster can connect to the redis cluster we just created by mentioning the service ‘service/salvoredisdeployv01-master’
+	
+ ./minikube kubectl -- get service/salvoredisdeployv01-master configmap/app-configmap
+NAME                                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/salvoredisdeployv01-master   ClusterIP   10.98.191.28   <none>        6379/TCP   113m
+NAME                      DATA   AGE
+configmap/app-configmap   1      100m
 
 Step 4: create configmap
 A ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume e.g. ConfigMaps as environment variables (among other things).
