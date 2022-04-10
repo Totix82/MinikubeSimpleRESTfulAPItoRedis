@@ -105,8 +105,6 @@ Redis&trade; can be accessed on the following DNS names from within your cluster
     salvoredisdeployv01-master.default.svc.cluster.local for read/write operations (port 6379)
     salvoredisdeployv01-replicas.default.svc.cluster.local for read-only operations (port 6379)
 
-
-
 To get your password run:
 
     export REDIS_PASSWORD=$(kubectl get secret --namespace default salvoredisdeployv01 -o jsonpath="{.data.redis-password}" | base64 --decode)
@@ -159,6 +157,34 @@ NAME                                 TYPE        CLUSTER-IP     EXTERNAL-IP   PO
 service/salvoredisdeployv01-master   ClusterIP   10.98.191.28   <none>        6379/TCP   113m
 NAME                      DATA   AGE
 configmap/app-configmap   1      100m
+	
+PS C:\minikube> ./minikube kubectl -- describe service/salvoredisdeployv01-master
+Name:              salvoredisdeployv01-master
+Namespace:         default
+Labels:            app.kubernetes.io/component=master
+                   app.kubernetes.io/instance=salvoredisdeployv01
+                   app.kubernetes.io/managed-by=Helm
+                   app.kubernetes.io/name=redis
+                   helm.sh/chart=redis-16.8.5
+Annotations:       meta.helm.sh/release-name: salvoredisdeployv01
+                   meta.helm.sh/release-namespace: default
+Selector:          app.kubernetes.io/component=master,app.kubernetes.io/instance=salvoredisdeployv01,app.kubernetes.io/name=redis
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.98.191.28
+IPs:               10.98.191.28
+Port:              tcp-redis  6379/TCP
+TargetPort:        redis/TCP
+Endpoints:         172.17.0.5:6379
+Session Affinity:  None
+Events:            <none>
+	
+PS C:\minikube> ./minikube kubectl -- get ep salvoredisdeployv01-master
+NAME                         ENDPOINTS         AGE
+salvoredisdeployv01-master   172.17.0.5:6379   149m
+	
+PS C:\minikube> Invoke-WebRequest -Uri http://172.17.0.5:6379	
 
 Step 4: create configmap
 A ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume e.g. ConfigMaps as environment variables (among other things).
